@@ -3,6 +3,7 @@ import Head from "next/head";
 // import Link from "next/link";
 import { api } from "~/utils/api";
 import Hero from "./components/Hero";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -15,6 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col items-center justify-center">
+        <Navbar />
         <Hero />
         <AuthShowcase />
       </main>

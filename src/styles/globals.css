@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 20 14.3% 4.1%;
+    --foreground: 228 67% 15%;
 
     --muted: 60 4.8% 95.9%;
     --muted-foreground: 25 5.3% 44.7%;
@@ -19,11 +19,11 @@
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
 
-    --primary: 24 9.8% 10%;
-    --primary-foreground: 60 9.1% 97.8%;
+    --primary: 137 57% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 4.8% 95.9%;
-    --secondary-foreground: 24 9.8% 10%;
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 137 57% 50%;
 
     --accent: 60 4.8% 95.9%;
     --accent-foreground: 24 9.8% 10%;
@@ -70,10 +70,7 @@
 
 @layer base {
   * {
-    @apply border-border;
-  }
-  p {
-    font-family: var(--font-inter);
+    @apply border-border font-inter;
   }
 
   h1,
@@ -81,7 +78,7 @@
   h3,
   h4,
   h5 {
-    font-family: var(--font-dmsans);
+    @apply font-dmsans;
   }
 
   h1 {
