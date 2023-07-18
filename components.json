@@ -10,7 +10,7 @@
     "cssVariables": true
   },
   "aliases": {
-    "components": "~/pages/components/ui",
+    "components": "~/pages/components",
     "utils": "~/utils/front"
   }
 }
