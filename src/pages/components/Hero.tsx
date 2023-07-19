@@ -12,7 +12,7 @@ export default function Hero() {
         quality={100}
         fill
       />
-      <div className="absolute inset-0 bg-black/30"> </div>
+      <div className="absolute inset-0 bg-black/50"> </div>
       <div className="container bg-white pb-8 sm:pb-12 lg:pb-12">
         <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-48">
           <div className="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-24 lg:px-8">

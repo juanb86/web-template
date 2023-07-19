@@ -4,6 +4,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
+import HeroFeatures from "./components/HeroFeatures";
 
 export default function Home() {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -18,6 +19,7 @@ export default function Home() {
       <main className="flex flex-col items-center justify-center">
         <Navbar />
         <Hero />
+        <HeroFeatures />
         <AuthShowcase />
       </main>
     </>
