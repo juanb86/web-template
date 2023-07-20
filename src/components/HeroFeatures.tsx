@@ -5,7 +5,13 @@ import {
   CheckboxIcon,
 } from "@radix-ui/react-icons";
 
-const cardsContent = [
+interface CardProps {
+  title: string;
+  description: string;
+  icon: React.ElementType;
+}
+
+const cardsContent: CardProps[] = [
   {
     title: "Strategy",
     description:
@@ -36,31 +42,20 @@ export default function HeroFeatures() {
   return (
     <div className="container z-10 -mt-32 flex">
       {cardsContent.map((card) => (
-        <Card
-          key={card.title}
-          title={card.title}
-          description={card.description}
-          Icon={card.icon}
-        />
+        <Card key={card.title} cardInfo={card} />
       ))}
     </div>
   );
 }
 
-const Card = ({
-  title,
-  description,
-  Icon,
-}: {
-  title: string;
-  description: string;
-  Icon: React.ElementType;
-}) => {
+const Card = ({ cardInfo }: { cardInfo: CardProps }) => {
   return (
     <div className="m-3 flex flex-col items-center rounded bg-white p-8">
-      <Icon className="mb-4 h-10 w-10 text-primary" />
-      <h3 className="font-semibold">{title}</h3>
-      <p className="text-center text-muted-foreground">{description}</p>
+      <cardInfo.icon className="mb-4 h-10 w-10 text-primary" />
+      <h3 className="font-semibold">{cardInfo.title}</h3>
+      <p className="text-center text-muted-foreground">
+        {cardInfo.description}
+      </p>
     </div>
   );
 };
