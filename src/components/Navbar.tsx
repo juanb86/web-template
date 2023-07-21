@@ -52,7 +52,7 @@ export default function Navbar() {
                 width={38}
               />
             </div>
-            <div className="hidden md:ml-6 md:flex md:space-x-8">
+            <div className="hidden md:ml-12 md:flex md:space-x-8">
               <NavItem href="#">Home</NavItem>
               <NavItem href="#">About us</NavItem>
               <NavItem href="#">Services</NavItem>
