@@ -7,7 +7,11 @@ import {
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    const posts = ctx.prisma.post.findMany();
+    const posts = ctx.prisma.post.findMany({
+      include: {
+        author: true, // Include author details
+      },
+    });
 
     return posts;
   }),
