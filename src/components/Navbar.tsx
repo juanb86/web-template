@@ -66,7 +66,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               {sessionData && (
-                <p className="text-md inline-flex items-center pe-2 pt-1 font-semibold text-muted">
+                <p className="inline-flex items-center pe-2 pt-1 text-sm font-semibold text-muted">
                   Logged in as {sessionData.user?.name}
                 </p>
               )}
