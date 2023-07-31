@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { createPostSchema } from "~/schemas/post.schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -17,13 +17,7 @@ export const postsRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        imageURL: z.string(),
-      })
-    )
+    .input(createPostSchema)
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.session.user.id;
 
