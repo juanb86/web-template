@@ -2,7 +2,7 @@ import Head from "next/head";
 import Hero from "~/components/Hero";
 import Navbar from "~/components/Navbar";
 import HeroFeatures from "~/components/HeroFeatures";
-import Blog from "~/components/Blog";
+import Blog from "~/components/blog/Blog";
 import Footer from "~/components/Footer";
 
 export default function Home() {
