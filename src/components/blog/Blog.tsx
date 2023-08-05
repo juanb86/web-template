@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { Post, User } from "@prisma/client";
-import Image from "next/image";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
@@ -43,14 +42,10 @@ const Card = ({
 }) => {
   return (
     <div className="relative m-3 flex basis-[31%] flex-col items-start overflow-hidden rounded-lg bg-white">
-      <div className="aspect-[9/6] w-full overflow-hidden">
-        <Image
-          src={cardInfo.imageURL}
-          alt={cardInfo.title}
-          width={1500}
-          height={500}
-        />
-      </div>
+      <div
+        className="aspect-[9/6] w-full overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url(${cardInfo.imageURL})` }}
+      />
       <div className="flex flex-1 flex-col justify-between px-8 pb-8 pt-4">
         <div>
           <h3 className="text-left font-semibold">{cardInfo.title}</h3>

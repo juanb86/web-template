@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { type CreatePostInput } from "~/schemas/post.schema";
-import useAutosizeTextArea from "~/utils/front";
+import { useAutosizeTextArea, fetchCloudinary } from "~/utils/front";
 import UploadImage from "./UploadImage";
 
 export default function CreatePost({
@@ -17,6 +17,7 @@ export default function CreatePost({
 
   const {
     handleSubmit,
+    watch,
     formState: { errors },
   } = methods;
 
@@ -31,11 +32,17 @@ export default function CreatePost({
     },
   });
 
-  function onSubmit(values: CreatePostInput) {
+  async function onSubmit(values: CreatePostInput) {
+    const cloudinaryImg = await fetchCloudinary(watch("imageURL"));
+
+    if (!cloudinaryImg.data) {
+      console.log(cloudinaryImg.error);
+      return;
+    }
+
     const toSubmit = {
       ...values,
-      imageURL:
-        "https://res.cloudinary.com/dxozat4y8/image/upload/v1689896892/post-image_cuolxq.jpg",
+      imageURL: cloudinaryImg.data.secure_url,
     };
 
     console.log(toSubmit);
