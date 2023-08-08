@@ -1,9 +1,9 @@
 import z from "zod";
 
 export const createPostSchema = z.object({
-  title: z.string().max(256),
+  title: z.string().min(1).max(256),
   description: z.string().min(10),
-  imageURL: z.string(),
+  imageURL: z.string().url(),
 });
 
 export type CreatePostInput = z.TypeOf<typeof createPostSchema>;

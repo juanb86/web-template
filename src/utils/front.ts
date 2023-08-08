@@ -11,7 +11,6 @@ export const useAutosizeTextArea = (
   textAreaRef: HTMLTextAreaElement | null,
   value: string
 ) => {
-  console.log("hook value", value);
   useEffect(() => {
     if (textAreaRef) {
       // We need to reset the height momentarily to get the correct scrollHeight for the textarea
@@ -64,15 +63,21 @@ interface FetchCloudinaryI {
   };
 }
 
-export async function fetchCloudinary(
-  imageData: string
-): Promise<FetchCloudinaryI> {
+export async function fetchCloudinary({
+  imageData,
+  preset,
+  cloud,
+}: {
+  imageData: string;
+  preset: string;
+  cloud: string;
+}): Promise<FetchCloudinaryI> {
   const formData = new FormData();
   formData.append("file", imageData);
-  formData.append("upload_preset", "webtemplateimgs");
+  formData.append("upload_preset", preset);
 
   const response = await fetchData<CloudinaryResponseData>(
-    "https://api.cloudinary.com/v1_1/juanb86/image/upload",
+    `https://api.cloudinary.com/v1_1/${cloud}/image/upload`,
     {
       method: "POST",
       body: formData,

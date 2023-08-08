@@ -1,3 +1,4 @@
+import { env } from "~/env.mjs";
 import { createPostSchema } from "~/schemas/post.schema";
 import {
   createTRPCRouter,
@@ -32,4 +33,14 @@ export const postsRouter = createTRPCRouter({
 
       return post;
     }),
+
+  cloudinary: protectedProcedure.query(() => {
+    const preset = env.CLOUDINARY_PRESET;
+    const cloud = env.CLOUDINARY_CLOUD;
+
+    return {
+      preset,
+      cloud,
+    };
+  }),
 });

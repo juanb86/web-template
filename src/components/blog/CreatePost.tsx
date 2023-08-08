@@ -1,84 +1,126 @@
-import { useRef } from "react";
+import { type FormEvent, useState } from "react";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { type CreatePostInput } from "~/schemas/post.schema";
-import { useAutosizeTextArea, fetchCloudinary } from "~/utils/front";
+import { FormProvider, useForm } from "react-hook-form";
+import { createPostSchema, type CreatePostInput } from "~/schemas/post.schema";
+import { fetchCloudinary } from "~/utils/front";
 import UploadImage from "./UploadImage";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ResizableTextArea } from "./ResizableTextArea";
 
 export default function CreatePost({
   setAddPost,
 }: {
   setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  // TODO: implement zod resolver with image upload
-  const methods = useForm<CreatePostInput>();
+  const methods = useForm<CreatePostInput>({
+    resolver: zodResolver(createPostSchema),
+  });
+
+  const imageURLstate = useState<string | null>(null);
 
   const {
     handleSubmit,
-    watch,
-    formState: { errors },
+    setValue,
+    setError,
+    formState: { errors, isSubmitting },
   } = methods;
 
   const { data: sessionData } = useSession();
 
   const ctx = api.useContext();
 
-  const { mutate, error } = api.post.create.useMutation({
+  const { mutate, error: mutateError } = api.post.create.useMutation({
     onSuccess: () => {
       setAddPost(false);
       void ctx.post.getAll.invalidate();
     },
   });
 
-  async function onSubmit(values: CreatePostInput) {
-    const cloudinaryImg = await fetchCloudinary(watch("imageURL"));
+  const { data: cloudinary } = api.post.cloudinary.useQuery();
 
-    if (!cloudinaryImg.data) {
-      console.log(cloudinaryImg.error);
+  async function uploadAndSubmit(event: FormEvent<HTMLFormElement>) {
+    if (errors.description || errors.title) {
+      void handleSubmit(onSubmit)(event);
+    }
+
+    if (!cloudinary) {
+      setError("imageURL", {
+        type: "custom",
+        message: "Cludinary data missing",
+      });
+      return;
+    }
+    if (!imageURLstate[0]) {
+      setError("imageURL", {
+        type: "custom",
+        message: "Image data missing",
+      });
       return;
     }
 
-    const toSubmit = {
-      ...values,
-      imageURL: cloudinaryImg.data.secure_url,
-    };
+    const cloudinaryImg = await fetchCloudinary({
+      imageData: imageURLstate[0],
+      cloud: cloudinary.cloud,
+      preset: cloudinary.preset,
+    });
 
-    console.log(toSubmit);
+    if (!cloudinaryImg.data) {
+      setError("imageURL", {
+        type: "custom",
+        message: "Error uploading image",
+      });
+      return;
+    }
 
-    mutate(toSubmit);
+    setValue("imageURL", cloudinaryImg.data.secure_url);
+
+    void handleSubmit(onSubmit)(event);
   }
 
-  const errorData = error && error.data?.zodError?.fieldErrors;
+  function onSubmit(values: CreatePostInput) {
+    mutate(values);
+  }
+
+  const errorData = mutateError && mutateError.data?.zodError?.fieldErrors;
 
   return (
-    <div className="relative m-3  basis-[31%] overflow-hidden rounded-lg bg-white">
+    <div className="relative m-3  basis-[31%]">
+      {errorData && (
+        <div className="absolute bottom-full left-0 z-50 mb-1 rounded-sm bg-red-500 px-2 text-white opacity-90 after:absolute after:left-1/2 after:top-full after:-ml-1 after:border-4 after:border-solid after:border-transparent after:border-t-red-500">
+          {Object.entries(errorData).map(([field, errors]) => (
+            <div className="flex items-baseline" key={field}>
+              {" "}
+              <p className="capitalize">{field}:</p>
+              <ul className="ml-2">
+                {errors && errors.map((error) => <li key={error}> {error}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
       <FormProvider {...methods}>
         <form
-          className="flex h-full flex-col items-start "
+          className="flex h-full flex-col items-start overflow-hidden rounded-lg bg-white"
           onSubmit={(event) => {
             event.preventDefault();
-            void handleSubmit(onSubmit)(event);
+
+            void uploadAndSubmit(event);
           }}
         >
-          <UploadImage />
+          <UploadImage imageURLstate={imageURLstate} />
           <div className="flex flex-1 flex-col justify-between px-8 pb-8 pt-4">
             <div>
-              {errors?.title?.message && (
-                <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
-                  {errors.title.message}
-                </p>
-              )}
               <ResizableTextArea
                 name="title"
                 placeholder="Post title"
-                className="w-full text-2xl font-semibold tracking-tight"
+                className="mb-5 w-full text-2xl font-semibold tracking-tight"
               />
               <ResizableTextArea
                 name="description"
                 placeholder="Post description"
-                className="mt-5 w-full text-muted-foreground"
+                className="w-full text-muted-foreground"
               />
             </div>
 
@@ -89,25 +131,12 @@ export default function CreatePost({
             </p>
           </div>
           <div className="absolute right-0 top-0 m-2 flex gap-2">
-            {errorData && (
-              <div className="rounded-sm bg-background/80 p-2 text-red-500">
-                {Object.entries(errorData).map(([field, errors]) => (
-                  <div className="flex items-baseline" key={field}>
-                    {" "}
-                    <p className="capitalize">{field}:</p>
-                    <ul className="ml-2">
-                      {errors &&
-                        errors.map((error) => <li key={error}> {error}</li>)}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
-            <Button type="submit" size="sm">
+            <Button type="submit" disabled={isSubmitting} size="sm">
               Add
             </Button>
             <Button
               onClick={() => setAddPost(false)}
+              disabled={isSubmitting}
               variant="destructive"
               size="sm"
             >
@@ -119,36 +148,3 @@ export default function CreatePost({
     </div>
   );
 }
-
-const ResizableTextArea = ({
-  name,
-  placeholder,
-  className,
-}: {
-  name: keyof CreatePostInput;
-  placeholder: string;
-  className: string;
-}) => {
-  const refTitleVar = useRef<HTMLTextAreaElement | null>(null);
-
-  const { register, watch } = useFormContext<CreatePostInput>();
-
-  const { ref: refTitle, ...registerTitle } = register(name);
-
-  const value = watch(name);
-
-  useAutosizeTextArea(refTitleVar.current, value);
-
-  return (
-    <textarea
-      rows={1}
-      placeholder={placeholder}
-      className={className}
-      ref={(e) => {
-        refTitle(e);
-        refTitleVar.current = e;
-      }}
-      {...registerTitle}
-    />
-  );
-};
