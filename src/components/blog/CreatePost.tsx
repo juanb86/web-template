@@ -8,24 +8,32 @@ import { fetchCloudinary } from "~/utils/front";
 import UploadImage from "./UploadImage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResizableTextArea } from "./ResizableTextArea";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function CreatePost({
   setAddPost,
 }: {
   setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const methods = useForm<CreatePostInput>({
-    resolver: zodResolver(createPostSchema),
-  });
+  const [isUploadingImg, setIsUploadingImg] = useState(false);
 
   const imageURLstate = useState<string | null>(null);
+
+  const methods = useForm<CreatePostInput>({
+    resolver: zodResolver(createPostSchema),
+    mode: "onChange",
+  });
 
   const {
     handleSubmit,
     setValue,
     setError,
-    formState: { errors, isSubmitting },
+    getFieldState,
+    trigger,
+    formState,
   } = methods;
+
+  const { isSubmitting } = formState;
 
   const { data: sessionData } = useSession();
 
@@ -41,8 +49,14 @@ export default function CreatePost({
   const { data: cloudinary } = api.post.cloudinary.useQuery();
 
   async function uploadAndSubmit(event: FormEvent<HTMLFormElement>) {
-    if (errors.description || errors.title) {
-      void handleSubmit(onSubmit)(event);
+    await trigger("title");
+    await trigger("description");
+
+    const { error: titleError } = getFieldState("title");
+    const { error: descriptionError } = getFieldState("description");
+
+    if (titleError || descriptionError) {
+      return;
     }
 
     if (!cloudinary) {
@@ -60,6 +74,7 @@ export default function CreatePost({
       return;
     }
 
+    setIsUploadingImg(true);
     const cloudinaryImg = await fetchCloudinary({
       imageData: imageURLstate[0],
       cloud: cloudinary.cloud,
@@ -69,14 +84,16 @@ export default function CreatePost({
     if (!cloudinaryImg.data) {
       setError("imageURL", {
         type: "custom",
-        message: "Error uploading image",
+        message: cloudinaryImg.error?.message || "Image upload failed",
       });
+      setIsUploadingImg(false);
       return;
     }
 
     setValue("imageURL", cloudinaryImg.data.secure_url);
 
     void handleSubmit(onSubmit)(event);
+    setIsUploadingImg(false);
   }
 
   function onSubmit(values: CreatePostInput) {
@@ -102,10 +119,10 @@ export default function CreatePost({
       )}
       <FormProvider {...methods}>
         <form
+          noValidate
           className="flex h-full flex-col items-start overflow-hidden rounded-lg bg-white"
           onSubmit={(event) => {
             event.preventDefault();
-
             void uploadAndSubmit(event);
           }}
         >
@@ -131,12 +148,23 @@ export default function CreatePost({
             </p>
           </div>
           <div className="absolute right-0 top-0 m-2 flex gap-2">
-            <Button type="submit" disabled={isSubmitting} size="sm">
-              Add
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isUploadingImg || isSubmitting}
+            >
+              {isUploadingImg || isSubmitting ? (
+                <>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Add"
+              )}
             </Button>
             <Button
               onClick={() => setAddPost(false)}
-              disabled={isSubmitting}
+              disabled={isUploadingImg || isSubmitting}
               variant="destructive"
               size="sm"
             >

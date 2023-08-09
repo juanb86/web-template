@@ -12,27 +12,23 @@ export const ResizableTextArea = ({
   placeholder: string;
   className: string;
 }) => {
-  const refTitleVar = useRef<HTMLTextAreaElement | null>(null);
+  const refVar = useRef<HTMLTextAreaElement | null>(null);
 
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useFormContext<CreatePostInput>();
+  const { register, watch, getFieldState } = useFormContext<CreatePostInput>();
 
-  const { ref: refTitle, ...registerTitle } = register(name);
+  const { ref, ...registerTitle } = register(name);
 
   const value = watch(name);
 
-  useAutosizeTextArea(refTitleVar.current, value);
+  useAutosizeTextArea(refVar.current, value);
 
-  const error = errors?.[name]?.message;
+  const { error } = getFieldState(name);
 
   return (
     <div className="relative">
       {error && (
         <div className="absolute bottom-full left-0 z-50 mb-1 rounded-sm bg-red-500 px-2 text-white opacity-90 after:absolute after:left-1/2 after:top-full after:-ml-1 after:border-4 after:border-solid after:border-transparent after:border-t-red-500">
-          <p>{error}</p>
+          <p>{error.message}</p>
         </div>
       )}
       <textarea
@@ -40,8 +36,8 @@ export const ResizableTextArea = ({
         placeholder={placeholder}
         className={className}
         ref={(e) => {
-          refTitle(e);
-          refTitleVar.current = e;
+          ref(e);
+          refVar.current = e;
         }}
         {...registerTitle}
       />
