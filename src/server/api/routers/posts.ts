@@ -1,5 +1,6 @@
+import { z } from "zod";
 import { env } from "~/env.mjs";
-import { createPostSchema } from "~/schemas/post.schema";
+import { createPostSchema, getSinglePostSchema } from "~/schemas/post.schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -32,6 +33,12 @@ export const postsRouter = createTRPCRouter({
       });
 
       return post;
+    }),
+
+  delete: protectedProcedure
+    .input(getSinglePostSchema)
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.post.delete({ where: { id: input.id } });
     }),
 
   cloudinary: protectedProcedure.query(() => {

@@ -7,3 +7,5 @@ export const createPostSchema = z.object({
 });
 
 export type CreatePostInput = z.TypeOf<typeof createPostSchema>;
+
+export const getSinglePostSchema = z.object({ id: z.string() });
