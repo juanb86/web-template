@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { env } from "~/env.mjs";
 import { createPostSchema, getSinglePostSchema } from "~/schemas/post.schema";
 import {
@@ -38,7 +38,21 @@ export const postsRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(getSinglePostSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.post.delete({ where: { id: input.id } });
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!post)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Post to delete not found",
+        });
+
+      await ctx.prisma.post.delete({
+        where: {
+          id: input.id,
+        },
+      });
     }),
 
   cloudinary: protectedProcedure.query(() => {

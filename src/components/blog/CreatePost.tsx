@@ -103,7 +103,7 @@ export default function CreatePost({
   const errorData = mutateError && mutateError.data?.zodError?.fieldErrors;
 
   return (
-    <div className="relative m-3  basis-[31%]">
+    <div className="relative m-3 basis-[31%]">
       {errorData && (
         <div className="absolute bottom-full left-0 z-50 mb-1 rounded-sm bg-red-500 px-2 text-white opacity-90 after:absolute after:left-1/2 after:top-full after:-ml-1 after:border-4 after:border-solid after:border-transparent after:border-t-red-500">
           {Object.entries(errorData).map(([field, errors]) => (
