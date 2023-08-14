@@ -26,6 +26,8 @@ export function SinglePost({
 
   const { data: sessionData } = useSession();
 
+  const { isFetching } = api.post.getAll.useQuery();
+
   const { id, title, description, imageURL, author, createdAt } = postInfo;
 
   const ctx = api.useContext();
@@ -67,7 +69,11 @@ export function SinglePost({
           <div className="absolute right-0 top-0 m-2 flex gap-2">
             <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
               <DialogTrigger asChild>
-                <Button disabled={isLoading} variant="destructive" size="sm">
+                <Button
+                  disabled={isLoading || isFetching}
+                  variant="destructive"
+                  size="sm"
+                >
                   {isLoading ? (
                     <>
                       <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />

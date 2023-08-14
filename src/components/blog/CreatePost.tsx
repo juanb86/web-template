@@ -40,7 +40,11 @@ export default function CreatePost({
 
   const ctx = api.useContext();
 
-  const { mutate, error: createError } = api.post.create.useMutation({
+  const {
+    mutate,
+    error: createError,
+    isLoading: isLoadingCreate,
+  } = api.post.create.useMutation({
     onSuccess: () => {
       setAddPost(false);
       void ctx.post.getAll.invalidate();
@@ -140,7 +144,7 @@ export default function CreatePost({
             <Button
               type="submit"
               size="sm"
-              disabled={isUploadingImg || isSubmitting}
+              disabled={isUploadingImg || isSubmitting || isLoadingCreate}
             >
               {isUploadingImg || isSubmitting ? (
                 <>
@@ -153,7 +157,7 @@ export default function CreatePost({
             </Button>
             <Button
               onClick={() => setAddPost(false)}
-              disabled={isUploadingImg || isSubmitting}
+              disabled={isUploadingImg || isSubmitting || isLoadingCreate}
               variant="destructive"
               size="sm"
             >

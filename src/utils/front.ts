@@ -41,8 +41,6 @@ export async function fetchData<T>(
   try {
     const response = await window.fetch(endpoint, options);
 
-    console.log("response in hook: ", response);
-
     if (response.ok) {
       const bodyJson = (await response.json()) as T;
 
