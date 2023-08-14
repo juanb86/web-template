@@ -3,8 +3,9 @@ import { type Dispatch, type SetStateAction } from "react";
 import { Input } from "../ui/input";
 import { useFormContext } from "react-hook-form";
 import { type CreatePostInput } from "~/schemas/post.schema";
+import { ShowErrorMsg } from "../ui/errors";
 
-export default function UploadImage({
+export default function SetImage({
   imageURLstate,
 }: {
   imageURLstate: [string | null, Dispatch<SetStateAction<string | null>>];
@@ -15,8 +16,8 @@ export default function UploadImage({
     formState: { errors },
   } = useFormContext<CreatePostInput>();
 
-  const handleCompressImage1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleCompressImage(event, setImageURL);
+  const handleImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    resizeAndSetImage(event, setImageURL);
   };
 
   const error = errors?.imageURL?.message;
@@ -28,22 +29,19 @@ export default function UploadImage({
     >
       {!imageURL && (
         <div className="relative flex w-full justify-center">
-          {error && (
-            <div className="absolute bottom-full left-0 z-50 mb-1 rounded-sm bg-red-500 px-2 text-white opacity-90 after:absolute after:right-2 after:top-full after:-ml-1 after:border-4 after:border-solid after:border-transparent after:border-t-red-500">
-              <p>{error}</p>
-            </div>
-          )}
+          <ShowErrorMsg errorMsg={error} />
           <ImageIcon className="mb-4 h-20 w-20 text-primary" />
         </div>
       )}
       <div className="absolute bottom-0 left-0 m-2 flex gap-2">
-        <Input type="file" accept="image/*" onChange={handleCompressImage1} />
+        <Input type="file" accept="image/*" onChange={handleImage} />
       </div>
     </div>
   );
 }
 
-const handleCompressImage = (
+// This function resizes and compresses an image file selected by the user and sets it as state in React
+const resizeAndSetImage = (
   event: React.ChangeEvent<HTMLInputElement>,
   setImage: Dispatch<SetStateAction<string | null>>
 ) => {

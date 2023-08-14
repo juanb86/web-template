@@ -45,8 +45,8 @@ export function SinglePost({
 
   return (
     <div className="relative m-3 basis-[31%]">
-      <ShowErrorFields deleteErrorFields={deleteErrorFields} />
-      <ShowErrorMsg deleteErrorMsg={deleteErrorMsg} />
+      <ShowErrorFields errorFields={deleteErrorFields} />
+      <ShowErrorMsg errorMsg={deleteErrorMsg} />
       <div className="flex flex-col items-start overflow-hidden rounded-lg bg-white">
         <div
           className="aspect-[9/6] w-full overflow-hidden bg-cover bg-center"

@@ -5,10 +5,11 @@ import { useSession } from "next-auth/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { createPostSchema, type CreatePostInput } from "~/schemas/post.schema";
 import { fetchCloudinary } from "~/utils/front";
-import UploadImage from "./UploadImage";
+import SetImage from "./SetImage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResizableTextArea } from "./ResizableTextArea";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { ShowErrorFields } from "../ui/errors";
 
 export default function CreatePost({
   setAddPost,
@@ -39,7 +40,7 @@ export default function CreatePost({
 
   const ctx = api.useContext();
 
-  const { mutate, error: mutateError } = api.post.create.useMutation({
+  const { mutate, error: createError } = api.post.create.useMutation({
     onSuccess: () => {
       setAddPost(false);
       void ctx.post.getAll.invalidate();
@@ -100,23 +101,11 @@ export default function CreatePost({
     mutate(values);
   }
 
-  const errorData = mutateError && mutateError.data?.zodError?.fieldErrors;
+  const createErrorFields = createError?.data?.zodError?.fieldErrors;
 
   return (
     <div className="relative m-3 basis-[31%]">
-      {errorData && (
-        <div className="absolute bottom-full left-0 z-50 mb-1 rounded-sm bg-red-500 px-2 text-white opacity-90 after:absolute after:left-1/2 after:top-full after:-ml-1 after:border-4 after:border-solid after:border-transparent after:border-t-red-500">
-          {Object.entries(errorData).map(([field, errors]) => (
-            <div className="flex items-baseline" key={field}>
-              {" "}
-              <p className="capitalize">{field}:</p>
-              <ul className="ml-2">
-                {errors && errors.map((error) => <li key={error}> {error}</li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
+      <ShowErrorFields errorFields={createErrorFields} />
       <FormProvider {...methods}>
         <form
           noValidate
@@ -126,7 +115,7 @@ export default function CreatePost({
             void uploadAndSubmit(event);
           }}
         >
-          <UploadImage imageURLstate={imageURLstate} />
+          <SetImage imageURLstate={imageURLstate} />
           <div className="flex flex-1 flex-col justify-between px-8 pb-8 pt-4">
             <div>
               <ResizableTextArea
