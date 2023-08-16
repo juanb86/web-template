@@ -18,13 +18,12 @@ If you are not familiar with the different technologies used in this project, pl
 Web-Template includes a range of features to help developers quickly create professional and effective online presence websites for their clients. Some of the key features include:
 
 ### Backend
-- [] Post creation: Web-Template includes functionality for creating and managing blog posts.
-- [] Image upload: Web-Template integrates with Cloudinary to allow for easy image upload and management within blog posts.
+<svg xmlns="http://www.w3.org/2000/svg" width="0.75rem" height="0.75rem" fill="orange" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13 0 24 11 24 24v112a24 24 0 1 1-48 0V152c0-13 11-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg> Post creation: Web-Template includes functionality for creating and managing blog posts.<br>
+<svg xmlns="http://www.w3.org/2000/svg" width="0.75rem" height="0.75rem" fill="orange" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13 0 24 11 24 24v112a24 24 0 1 1-48 0V152c0-13 11-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg> Image upload: Web-Template integrates with Cloudinary to allow for easy image upload and management within blog posts.
 
 ### Frontend
-- [] Carousel: Web-Template includes a carousel component for displaying images or other content in an engaging and interactive way.
-- [] Animations: Web-Template includes animations to enhance the user experience and make the website more visually appealing.
-- [] Dark mode: Web-Template includes a dark mode option to improve accessibility and provide a better user experience for those who prefer a darker color scheme.
+<svg xmlns="http://www.w3.org/2000/svg" width="0.75rem" height="0.75rem" fill="orange" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13 0 24 11 24 24v112a24 24 0 1 1-48 0V152c0-13 11-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg> Carousel: Web-Template includes a carousel component for displaying images or other content in an engaging and interactive way.<br>
+<svg xmlns="http://www.w3.org/2000/svg" width="0.75rem" height="0.75rem" fill="orange" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13 0 24 11 24 24v112a24 24 0 1 1-48 0V152c0-13 11-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg> Animations: Web-Template includes animations to enhance the user experience and make the website more visually appealing.
 
 These are just some of the features included in Web-Template. The project is designed to be flexible and customizable, allowing developers to add additional features as needed.
 

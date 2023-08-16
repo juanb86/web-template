@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -10,6 +11,8 @@ import { Button } from "./ui/button";
 import type { CollapsibleTriggerProps } from "@radix-ui/react-collapsible";
 
 export default function Navbar() {
+  const { data: sessionData } = useSession();
+
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -62,8 +65,19 @@ export default function Navbar() {
           </div>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Button size="sm">
-                <span>Get started</span>
+              {sessionData && (
+                <p className="inline-flex items-center pe-2 pt-1 text-sm font-semibold text-muted">
+                  Logged in as {sessionData.user?.name}
+                </p>
+              )}
+              <Button
+                className="mt-1"
+                size="sm"
+                onClick={
+                  sessionData ? () => void signOut() : () => void signIn()
+                }
+              >
+                {sessionData ? <span>Sign out</span> : <span>Sign in</span>}
               </Button>
             </div>
           </div>
