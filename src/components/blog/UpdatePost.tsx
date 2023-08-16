@@ -1,28 +1,40 @@
 import { type FormEvent, useState } from "react";
+import type { Post, User } from "@prisma/client";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { FormProvider, useForm } from "react-hook-form";
-import { createPostSchema, type CreatePostInput } from "~/schemas/post.schema";
+
 import { fetchCloudinary } from "~/utils/front";
 import SetImage from "./SetImage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ResizableTextArea } from "./ResizableTextArea";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ShowErrorFields } from "../ui/errors";
+import { updatePostSchema, type UpdatePostInput } from "~/schemas/post.schema";
 
-export default function CreatePost({
-  setAddPost,
+export default function UpdatePost({
+  postInfo,
+  setIsUpdating,
 }: {
-  setAddPost: React.Dispatch<React.SetStateAction<boolean>>;
+  postInfo: Post & {
+    author: User;
+  };
+  setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [isUploadingImg, setIsUploadingImg] = useState(false);
 
   const imageURLstate = useState<string | null>(null);
 
-  const methods = useForm<CreatePostInput>({
-    resolver: zodResolver(createPostSchema),
+  const methods = useForm<UpdatePostInput>({
+    resolver: zodResolver(updatePostSchema),
     mode: "onChange",
+    defaultValues: {
+      title: postInfo.title,
+      description: postInfo.description,
+      imageURL: postInfo.imageURL,
+      id: postInfo.id,
+    },
   });
 
   const {
@@ -42,11 +54,11 @@ export default function CreatePost({
 
   const {
     mutate,
-    error: createError,
-    isLoading: isLoadingCreate,
-  } = api.post.create.useMutation({
+    error: updateError,
+    isLoading: isLoadingUpdate,
+  } = api.post.update.useMutation({
     onSuccess: () => {
-      setAddPost(false);
+      setIsUpdating(false);
       void ctx.post.getAll.invalidate();
     },
   });
@@ -64,52 +76,47 @@ export default function CreatePost({
       return;
     }
 
-    if (!cloudinary) {
-      setError("imageURL", {
-        type: "custom",
-        message: "Cludinary data missing",
-      });
-      return;
-    }
-    if (!imageURLstate[0]) {
-      setError("imageURL", {
-        type: "custom",
-        message: "Image data missing",
-      });
-      return;
-    }
+    if (imageURLstate[0]) {
+      if (!cloudinary) {
+        setError("imageURL", {
+          type: "custom",
+          message: "Cludinary data missing",
+        });
+        return;
+      }
 
-    setIsUploadingImg(true);
-    const cloudinaryImg = await fetchCloudinary({
-      imageData: imageURLstate[0],
-      cloud: cloudinary.cloud,
-      preset: cloudinary.preset,
-    });
+      setIsUploadingImg(true);
 
-    if (!cloudinaryImg.data) {
-      setError("imageURL", {
-        type: "custom",
-        message: cloudinaryImg.error?.message || "Image upload failed",
+      const cloudinaryImg = await fetchCloudinary({
+        imageData: imageURLstate[0],
+        cloud: cloudinary.cloud,
+        preset: cloudinary.preset,
       });
-      setIsUploadingImg(false);
-      return;
-    }
 
-    setValue("imageURL", cloudinaryImg.data.secure_url);
+      if (!cloudinaryImg.data) {
+        setError("imageURL", {
+          type: "custom",
+          message: cloudinaryImg.error?.message || "Image upload failed",
+        });
+        setIsUploadingImg(false);
+        return;
+      }
+      setValue("imageURL", cloudinaryImg.data.secure_url);
+    }
 
     void handleSubmit(onSubmit)(event);
     setIsUploadingImg(false);
   }
 
-  function onSubmit(values: CreatePostInput) {
+  function onSubmit(values: UpdatePostInput) {
     mutate(values);
   }
 
-  const createErrorFields = createError?.data?.zodError?.fieldErrors;
+  const updateErrorFields = updateError?.data?.zodError?.fieldErrors;
 
   return (
     <div className="relative m-3 basis-[31%]">
-      <ShowErrorFields errorFields={createErrorFields} />
+      <ShowErrorFields errorFields={updateErrorFields} />
       <FormProvider {...methods}>
         <form
           noValidate
@@ -119,7 +126,10 @@ export default function CreatePost({
             void uploadAndSubmit(event);
           }}
         >
-          <SetImage imageURLstate={imageURLstate} />
+          <SetImage
+            imageURLstate={imageURLstate}
+            imageLink={postInfo.imageURL}
+          />
           <div className="flex flex-1 flex-col justify-between px-8 pb-8 pt-4">
             <div>
               <ResizableTextArea
@@ -144,7 +154,7 @@ export default function CreatePost({
             <Button
               type="submit"
               size="sm"
-              disabled={isUploadingImg || isSubmitting || isLoadingCreate}
+              disabled={isUploadingImg || isSubmitting || isLoadingUpdate}
             >
               {isUploadingImg || isSubmitting ? (
                 <>
@@ -152,12 +162,12 @@ export default function CreatePost({
                   Please wait
                 </>
               ) : (
-                "Add"
+                "Update"
               )}
             </Button>
             <Button
-              onClick={() => setAddPost(false)}
-              disabled={isUploadingImg || isSubmitting || isLoadingCreate}
+              onClick={() => setIsUpdating(false)}
+              disabled={isUploadingImg || isSubmitting || isLoadingUpdate}
               variant="secondary"
               size="sm"
             >

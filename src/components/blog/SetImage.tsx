@@ -7,8 +7,10 @@ import { ShowErrorMsg } from "../ui/errors";
 
 export default function SetImage({
   imageURLstate,
+  imageLink,
 }: {
   imageURLstate: [string | null, Dispatch<SetStateAction<string | null>>];
+  imageLink?: string;
 }) {
   const [imageURL, setImageURL] = imageURLstate;
 
@@ -27,11 +29,17 @@ export default function SetImage({
       className="relative flex aspect-[9/6] w-full items-center justify-center overflow-hidden bg-foreground bg-cover bg-center"
       style={{ backgroundImage: imageURL ? `url(${imageURL})` : "" }}
     >
-      {!imageURL && (
+      {!imageURL && !imageLink && (
         <div className="relative flex w-full justify-center">
           <ShowErrorMsg errorMsg={error} />
           <ImageIcon className="mb-4 h-20 w-20 text-primary" />
         </div>
+      )}
+      {!imageURL && imageLink && (
+        <div
+          className="aspect-[9/6] w-full overflow-hidden bg-cover bg-center"
+          style={{ backgroundImage: `url(${imageLink})` }}
+        />
       )}
       <div className="absolute bottom-0 left-0 m-2 flex gap-2">
         <Input type="file" accept="image/*" onChange={handleImage} />

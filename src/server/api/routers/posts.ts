@@ -1,6 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { env } from "~/env.mjs";
-import { createPostSchema, getSinglePostSchema } from "~/schemas/post.schema";
+import {
+  createPostSchema,
+  getSinglePostSchema,
+  updatePostSchema,
+} from "~/schemas/post.schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -24,6 +28,26 @@ export const postsRouter = createTRPCRouter({
       const authorId = ctx.session.user.id;
 
       const post = await ctx.prisma.post.create({
+        data: {
+          title: input.title,
+          description: input.description,
+          imageURL: input.imageURL,
+          authorId,
+        },
+      });
+
+      return post;
+    }),
+
+  update: protectedProcedure
+    .input(updatePostSchema)
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.session.user.id;
+
+      const post = await ctx.prisma.post.update({
+        where: {
+          id: input.id,
+        },
         data: {
           title: input.title,
           description: input.description,
