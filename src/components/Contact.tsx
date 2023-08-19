@@ -72,7 +72,8 @@ export default function Contact() {
               </>
             ))}
           </div>
-          <div className="m-3 flex flex-col items-center rounded bg-white p-8">
+          <div className="m-3 flex flex-col items-start rounded bg-white p-8">
+            <h2 className="mb-4">Send us a message</h2>
             <ContactForm />
           </div>
         </div>

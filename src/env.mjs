@@ -25,6 +25,9 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     CLOUDINARY_CLOUD: z.string(),
     CLOUDINARY_PRESET: z.string(),
+    EMAIL_TO: z.string(),
+    BREVO_USER: z.string(),
+    BREVO_PASS: z.string(),
   },
 
   /**
@@ -49,6 +52,9 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     CLOUDINARY_CLOUD: process.env.CLOUDINARY_CLOUD,
     CLOUDINARY_PRESET: process.env.CLOUDINARY_PRESET,
+    EMAIL_TO: process.env.EMAIL_TO,
+    BREVO_USER: process.env.BREVO_USER,
+    BREVO_PASS: process.env.BREVO_PASS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

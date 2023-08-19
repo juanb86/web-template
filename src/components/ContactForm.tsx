@@ -11,17 +11,31 @@ import {
 import { Input } from "./ui/input";
 import { contactSchema, type ContactInput } from "~/schemas/contact.schema";
 import { useForm } from "react-hook-form";
+import { api } from "~/utils/api";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 export function ContactForm() {
   const form = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
   });
 
+  const { mutate, error, isLoading } = api.contact.send.useMutation({
+    onSuccess: () => {
+      console.log("SENT");
+    },
+  });
+
   function onSubmit(values: ContactInput) {
     console.log(values);
+    mutate(values);
   }
 
   console.log("FORM RENDER");
+
+  if (error) {
+    console.log("SEND EMAIL ERROR: ", error);
+    console.log(error.data?.zodError?.formErrors);
+  }
 
   return (
     <Form {...form}>
@@ -108,7 +122,27 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Send Message</Button>
+        <div className="flex items-baseline">
+          <Button
+            className="mr-2 flex-[0_0_auto]"
+            disabled={isLoading}
+            type="submit"
+          >
+            {isLoading ? (
+              <>
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                Sending
+              </>
+            ) : (
+              "Send Message"
+            )}
+          </Button>
+          {error && (
+            <p className="text-[0.8rem] font-medium text-destructive">
+              {error.data?.zodError?.formErrors || "Something went wrong"}
+            </p>
+          )}
+        </div>
       </form>
     </Form>
   );
