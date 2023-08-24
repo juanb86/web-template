@@ -28,6 +28,7 @@ export const env = createEnv({
     EMAIL_TO: z.string(),
     BREVO_USER: z.string(),
     BREVO_PASS: z.string(),
+    RECAPTCHA_SECRET_KEY: z.string().min(1),
   },
 
   /**
@@ -37,6 +38,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().min(1),
   },
 
   /**
@@ -55,6 +57,8 @@ export const env = createEnv({
     EMAIL_TO: process.env.EMAIL_TO,
     BREVO_USER: process.env.BREVO_USER,
     BREVO_PASS: process.env.BREVO_PASS,
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

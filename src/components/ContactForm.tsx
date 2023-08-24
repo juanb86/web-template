@@ -12,22 +12,28 @@ import { Input } from "./ui/input";
 import { contactSchema, type ContactInput } from "~/schemas/contact.schema";
 import { useForm } from "react-hook-form";
 import { api } from "~/utils/api";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { ReloadIcon, CheckIcon } from "@radix-ui/react-icons";
+import { useReCaptcha } from "next-recaptcha-v3";
 
 export function ContactForm() {
   const form = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
   });
 
-  const { mutate, error, isLoading } = api.contact.send.useMutation({
+  const { executeRecaptcha } = useReCaptcha();
+
+  const { mutate, error, isLoading, isSuccess } = api.contact.send.useMutation({
     onSuccess: () => {
       console.log("SENT");
     },
   });
 
-  function onSubmit(values: ContactInput) {
+  async function onSubmit(values: ContactInput) {
     console.log(values);
-    mutate(values);
+
+    const token = await executeRecaptcha("contact_form_submit");
+
+    mutate({ ...values, token });
   }
 
   console.log("FORM RENDER");
@@ -125,13 +131,18 @@ export function ContactForm() {
         <div className="flex items-baseline">
           <Button
             className="mr-2 flex-[0_0_auto]"
-            disabled={isLoading}
+            disabled={isLoading || isSuccess}
             type="submit"
           >
             {isLoading ? (
               <>
                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 Sending
+              </>
+            ) : isSuccess ? (
+              <>
+                <CheckIcon className="mr-2 h-4 w-4" />
+                Sent
               </>
             ) : (
               "Send Message"
@@ -140,6 +151,11 @@ export function ContactForm() {
           {error && (
             <p className="text-[0.8rem] font-medium text-destructive">
               {error.data?.zodError?.formErrors || "Something went wrong"}
+            </p>
+          )}
+          {isSuccess && (
+            <p className="text-[0.8rem] font-medium text-green-500">
+              Form submitted successfully
             </p>
           )}
         </div>

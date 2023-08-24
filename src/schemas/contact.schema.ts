@@ -9,4 +9,8 @@ export const contactSchema = z.object({
   message: z.string().nonempty(),
 });
 
+export const contactSchemaWithToken = contactSchema.extend({
+  token: z.string(),
+});
+
 export type ContactInput = z.infer<typeof contactSchema>;
