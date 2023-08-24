@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { ChatBubbleIcon, TargetIcon } from "@radix-ui/react-icons";
+import { EnvelopeClosedIcon, BackpackIcon } from "@radix-ui/react-icons";
+import PhoneIcon from "~/components/ui/icons/PhoneIcon";
 import { ContactForm } from "./ContactForm";
 
 interface CardProps {
@@ -10,16 +11,19 @@ interface CardProps {
 
 const cardsContent: CardProps[] = [
   {
-    title: "Strategy",
-    description:
-      "Pulvinar enim nisl turpis dignissim lobortis viverra facilisis nisi bibendum.",
-    icon: TargetIcon,
+    title: "Head Office",
+    description: "Publica 1234, Buenos Aires - Argentina",
+    icon: BackpackIcon,
   },
   {
-    title: "Consultancy",
-    description:
-      "Pulvinar enim nisl turpis dignissim lobortis viverra facilisis nisi bibendum.",
-    icon: ChatBubbleIcon,
+    title: "Email us",
+    description: "support@webtemplate.com",
+    icon: EnvelopeClosedIcon,
+  },
+  {
+    title: "Call us",
+    description: "011-42123456",
+    icon: PhoneIcon,
   },
 ];
 
@@ -59,17 +63,17 @@ export default function Contact() {
           </div>
         </div>
       </div>
-      <div className="container z-10 -mt-24 flex">
+      <div className="container z-10 -mt-24 flex pb-24">
         <div className="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:grid lg:max-w-5xl lg:grid-cols-[3fr_4fr] lg:px-8">
-          <div className="m-3 flex flex-col items-center rounded bg-white p-8">
+          <div className="m-3 flex flex-col gap-6 rounded bg-white p-8">
             {cardsContent.map((card) => (
-              <>
-                <card.icon className="mb-4 h-10 w-10 text-primary" />
-                <h3 className="font-semibold">{card.title}</h3>
-                <p className="text-center text-muted-foreground">
-                  {card.description}
-                </p>
-              </>
+              <div key={card.title} className="flex">
+                <card.icon className="mb-4 mr-4 h-8 w-8 text-primary" />
+                <div>
+                  <h3 className="font-semibold">{card.title}</h3>
+                  <p className="text-muted-foreground">{card.description}</p>
+                </div>
+              </div>
             ))}
           </div>
           <div className="m-3 flex flex-col items-start rounded bg-white p-8">
