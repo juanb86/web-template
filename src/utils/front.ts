@@ -39,7 +39,7 @@ export async function fetchData<T>(
   options?: FetchOptions
 ): Promise<ResponseExtended<T>> {
   try {
-    const response = await window.fetch(endpoint, options);
+    const response = await fetch(endpoint, options);
 
     if (response.ok) {
       const bodyJson = (await response.json()) as T;

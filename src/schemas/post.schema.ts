@@ -8,7 +8,7 @@ export const createPostSchema = z.object({
   imageURL: z.string().url(),
 });
 
-export type CreatePostInput = z.TypeOf<typeof createPostSchema>;
+export type CreatePostInput = z.infer<typeof createPostSchema>;
 
 export const updatePostSchema = z.object({
   title: z.string().min(1).max(256),
@@ -17,4 +17,4 @@ export const updatePostSchema = z.object({
   id: z.string(),
 });
 
-export type UpdatePostInput = z.TypeOf<typeof updatePostSchema>;
+export type UpdatePostInput = z.infer<typeof updatePostSchema>;

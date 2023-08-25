@@ -3,14 +3,15 @@ import { Button } from "./ui/button";
 
 export default function Hero() {
   return (
-    <div className="w-full" style={{ clipPath: "inset(0 0 0 0)" }}>
+    <div className="relative w-full" style={{ clipPath: "inset(0 0 0 0)" }}>
       <Image
         className="object-cover"
         alt="Office background"
-        src="https://res.cloudinary.com/dxozat4y8/image/upload/v1689638124/headway-5QgIuuBxKwM-unsplash_x9feal.jpg"
+        src="https://res.cloudinary.com/juanb86/image/upload/v1689638124/headway-5QgIuuBxKwM-unsplash_x9feal.jpg"
         placeholder="empty"
         quality={100}
         fill
+        priority
       />
       <div className="absolute inset-0 bg-black/50"> </div>
       <div className="container bg-white pb-8 sm:pb-12 lg:pb-12">
