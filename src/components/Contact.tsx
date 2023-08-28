@@ -2,6 +2,7 @@ import Image from "next/image";
 import { EnvelopeClosedIcon, BackpackIcon } from "@radix-ui/react-icons";
 import PhoneIcon from "~/components/ui/icons/PhoneIcon";
 import { ContactForm } from "./ContactForm";
+import AnimatedInView from "./ui/animated";
 
 interface CardProps {
   title: string;
@@ -44,8 +45,8 @@ export default function Contact() {
           <div className="overflow-hidden pt-8 sm:pt-12 lg:relative lg:py-12">
             <div className="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8">
               <div className="mt-20 flex flex-col items-baseline">
-                <div className="my-6">
-                  <h1 className="text-primary-foreground">
+                <AnimatedInView className="my-6">
+                  <h1 className="mb-4 text-primary-foreground">
                     Easy Post Creation and Management
                   </h1>
                   <p className="text-primary-foreground">
@@ -57,7 +58,7 @@ export default function Contact() {
                     your posts. Keep your clients’ websites up-to-date and
                     engaging with Web-Template.
                   </p>
-                </div>
+                </AnimatedInView>
               </div>
             </div>
           </div>
