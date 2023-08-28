@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type MutableRefObject, type RefCallback } from "react";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -112,4 +112,24 @@ interface CloudinaryResponseData {
   access_mode: string;
   existing: boolean;
   original_filename: string;
+}
+
+type MutableRefList<T> = Array<
+  RefCallback<T> | MutableRefObject<T> | undefined | null
+>;
+
+export function mergeRefs<T>(...refs: MutableRefList<T>): RefCallback<T> {
+  return (val: T) => {
+    setRef(val, ...refs);
+  };
+}
+
+export function setRef<T>(val: T, ...refs: MutableRefList<T>): void {
+  refs.forEach((ref) => {
+    if (typeof ref === "function") {
+      ref(val);
+    } else if (ref != null) {
+      ref.current = val;
+    }
+  });
 }

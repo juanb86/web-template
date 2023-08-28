@@ -1,32 +1,51 @@
-import { type ElementType, type HTMLAttributes } from "react";
+import React from "react";
 import { useInView } from "react-intersection-observer";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn, mergeRefs } from "~/utils/front";
 
-interface Props extends HTMLAttributes<HTMLElement> {
-  as?: ElementType;
+const animationVariants = cva("", {
+  variants: {
+    animation: {
+      right: "translate-x-full opacity-0",
+      left: "-translate-x-full opacity-0",
+      top: "-translate-y-full opacity-0",
+      bottom: "translate-y-full opacity-0",
+      none: "translate-0 opacity-0",
+    },
+  },
+  defaultVariants: {
+    animation: "right",
+  },
+});
+
+export interface AnimatedInViewProps
+  extends React.HTMLAttributes<HTMLElement>,
+    VariantProps<typeof animationVariants> {
+  as?: React.ElementType;
 }
 
-const AnimatedInView: React.FC<Props> = ({
-  as: Tag = "div",
-  className: classNameProp = "",
-  children,
-  ...rest
-}) => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    rootMargin: "-50px 0px",
-  });
+const AnimatedInView = React.forwardRef<HTMLElement, AnimatedInViewProps>(
+  ({ className, animation, as: Tag = "div", ...props }, ref) => {
+    const { ref: refInView, inView } = useInView({
+      triggerOnce: true,
+      rootMargin: "-50px 0px",
+    });
 
-  return (
-    <Tag
-      ref={ref}
-      className={`${classNameProp} [transition:transform_1s,opacity_2s] ${
-        inView ? "opacity-1 translate-x-0" : "translate-x-full opacity-0"
-      }`}
-      {...rest}
-    >
-      {children}
-    </Tag>
-  );
-};
+    return (
+      <Tag
+        className={cn(
+          animationVariants({ animation, className }),
+          "[transition:transform_1s,opacity_2s]",
+          inView ? "opacity-1 translate-x-0 translate-y-0" : ""
+        )}
+        ref={mergeRefs(ref, refInView)}
+        {...props}
+      />
+    );
+  }
+);
+AnimatedInView.displayName = "AnimatedInView";
+
+export { AnimatedInView, animationVariants };
 
 export default AnimatedInView;
