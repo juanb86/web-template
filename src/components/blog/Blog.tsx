@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import CreatePost from "./CreatePost";
 import { SinglePost } from "./Post";
+import AnimatedInView from "../ui/animated";
 
 export default function Blog() {
   const { data: sessionData } = useSession();
@@ -21,11 +22,14 @@ export default function Blog() {
           ))}
           {addPost && <CreatePost setAddPost={setAddPost} />}
           {sessionData && !addPost && (
-            <div className="m-3 flex basis-[31%] flex-col items-center justify-center overflow-hidden rounded-lg">
+            <AnimatedInView
+              animation="none"
+              className="m-3 flex basis-[31%] flex-col items-center justify-center overflow-hidden rounded-lg"
+            >
               <Button onClick={() => setAddPost(true)} size="lg">
                 Add Post
               </Button>
-            </div>
+            </AnimatedInView>
           )}
         </div>
       </div>

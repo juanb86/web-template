@@ -15,6 +15,7 @@ import {
 } from "../ui/dialog";
 import { ShowErrorFields, ShowErrorMsg } from "../ui/errors";
 import UpdatePost from "./UpdatePost";
+import AnimatedInView from "../ui/animated";
 
 export function SinglePost({
   postInfo,
@@ -51,7 +52,7 @@ export function SinglePost({
   return (
     <>
       {!isUpdating && (
-        <div className="relative m-3 basis-[31%]">
+        <AnimatedInView className="relative m-3 basis-[31%]">
           <ShowErrorFields errorFields={deleteErrorFields} />
           <ShowErrorMsg errorMsg={deleteErrorMsg} />
           <div className="flex flex-col items-start overflow-hidden rounded-lg bg-white">
@@ -128,7 +129,7 @@ export function SinglePost({
               </div>
             )}
           </div>
-        </div>
+        </AnimatedInView>
       )}
       {isUpdating && (
         <UpdatePost postInfo={postInfo} setIsUpdating={setIsUpdating} />

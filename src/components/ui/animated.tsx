@@ -14,7 +14,7 @@ const animationVariants = cva("", {
     },
   },
   defaultVariants: {
-    animation: "right",
+    animation: "left",
   },
 });
 
@@ -22,20 +22,24 @@ export interface AnimatedInViewProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof animationVariants> {
   as?: React.ElementType;
+  rootMargin?: number;
 }
 
 const AnimatedInView = React.forwardRef<HTMLElement, AnimatedInViewProps>(
-  ({ className, animation, as: Tag = "div", ...props }, ref) => {
+  (
+    { className, animation, as: Tag = "div", rootMargin = -50, ...props },
+    ref
+  ) => {
     const { ref: refInView, inView } = useInView({
       triggerOnce: true,
-      rootMargin: "-50px 0px",
+      rootMargin: `${rootMargin}px 0px`,
     });
 
     return (
       <Tag
         className={cn(
           animationVariants({ animation, className }),
-          "[transition:transform_1s,opacity_2s]",
+          "[transition:transform_1s,opacity_1s]",
           inView ? "opacity-1 translate-x-0 translate-y-0" : ""
         )}
         ref={mergeRefs(ref, refInView)}

@@ -4,6 +4,7 @@ import {
   GlobeIcon,
   CheckboxIcon,
 } from "@radix-ui/react-icons";
+import AnimatedInView from "./ui/animated";
 
 interface CardProps {
   title: string;
@@ -50,12 +51,16 @@ export default function HeroFeatures() {
 
 const Card = ({ cardInfo }: { cardInfo: CardProps }) => {
   return (
-    <div className="m-3 flex flex-col items-center rounded bg-white p-8">
+    <AnimatedInView
+      animation="bottom"
+      rootMargin={150}
+      className="m-3 flex flex-col items-center rounded bg-white p-8"
+    >
       <cardInfo.icon className="mb-4 h-10 w-10 text-primary" />
       <h3 className="font-semibold">{cardInfo.title}</h3>
       <p className="text-center text-muted-foreground">
         {cardInfo.description}
       </p>
-    </div>
+    </AnimatedInView>
   );
 };

@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ResizableTextArea } from "./ResizableTextArea";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ShowErrorFields } from "../ui/errors";
+import AnimatedInView from "../ui/animated";
 
 export default function CreatePost({
   setAddPost,
@@ -108,7 +109,7 @@ export default function CreatePost({
   const createErrorFields = createError?.data?.zodError?.fieldErrors;
 
   return (
-    <div className="relative m-3 basis-[31%]">
+    <AnimatedInView animation="none" className="relative m-3 basis-[31%]">
       <ShowErrorFields errorFields={createErrorFields} />
       <FormProvider {...methods}>
         <form
@@ -166,6 +167,6 @@ export default function CreatePost({
           </div>
         </form>
       </FormProvider>
-    </div>
+    </AnimatedInView>
   );
 }
